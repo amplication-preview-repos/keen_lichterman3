@@ -1,0 +1,60 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Settings {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String?
+  value     Json?
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  title       String?
+  description String?
+  isActive    Boolean?
+  tasks       Task[]
+}
+
+model Task {
+  id         String            @id @default(cuid())
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  title      String?
+  details    String?
+  status     EnumTaskStatus?
+  priority   EnumTaskPriority?
+  dueDate    DateTime?
+  project    Project?          @relation(fields: [projectId], references: [id])
+  projectId  String?
+  assignedTo String?
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  firstName String?
+  lastName  String?
+  username  String   @unique
+  email     String?  @unique
+  password  String
+  roles     Json
+}
+
+enum EnumTaskStatus {
+  Option1
+}
+
+enum EnumTaskPriority {
+  Option1
+}
